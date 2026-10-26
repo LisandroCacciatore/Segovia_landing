@@ -10,7 +10,7 @@ import Privacidad from './pages/Privacidad.jsx';
 export default function App() {
   return (
     <HelmetProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/Segovia_landing">
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Layout />}>

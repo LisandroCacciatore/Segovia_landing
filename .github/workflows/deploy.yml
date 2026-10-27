@@ -1,9 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy staging to GitHub Pages
 
 on:
-  push:
-    branches: ['main'] # Se ejecuta al hacer push a la rama main
-  workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions
+  # Manual a proposito: Pages es publico y este build contiene articulos que
+  # todavia no aprobo Santiago. No publicar automaticamente en cada push.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -29,8 +29,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build (staging: base path + noindex)
+        run: npm run build:staging
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

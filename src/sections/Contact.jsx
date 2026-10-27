@@ -10,6 +10,7 @@ const EMPTY = {
   service: 'despido',
   message: '',
   consent: false,
+  honeypot: '',
 };
 
 export default function Contact() {
@@ -41,6 +42,13 @@ export default function Contact() {
     e.preventDefault();
     if (!form.consent) return;
 
+    // Honeypot: if filled, simulate success without sending
+    if (form.honeypot) {
+      setStatus('ok');
+      setForm(EMPTY);
+      return;
+    }
+
     const endpoint = import.meta.env.VITE_FORM_ENDPOINT;
 
     // Sin backend configurado, la consulta sale por WhatsApp: es el canal real
@@ -55,10 +63,11 @@ export default function Contact() {
 
     setStatus('sending');
     try {
+      const { honeypot, ...datos } = form;
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, origen: 'landing', enviado: new Date().toISOString() }),
+        body: JSON.stringify({ ...datos, origen: 'landing', enviado: new Date().toISOString() }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setStatus('ok');
@@ -180,6 +189,19 @@ export default function Contact() {
                     onChange={handleChange}
                     placeholder="Contanos brevemente que paso, si recibiste telegrama o la fecha del accidente..."
                     className="w-full px-space-md py-space-sm bg-surface-container-lowest text-on-surface rounded-lg focus:outline-none focus:ring-1 focus:ring-primary shadow-sm font-body-md"
+                  />
+                </div>
+                {/* Honeypot field - hidden from users */}
+                <div style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true">
+                  <label htmlFor="honeypot" className="sr-only">Leave empty</label>
+                  <input
+                    id="honeypot"
+                    name="honeypot"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.honeypot}
+                    onChange={handleChange}
                   />
                 </div>
 

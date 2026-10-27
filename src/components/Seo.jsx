@@ -13,6 +13,7 @@ export default function Seo({
   const fullTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.tagline}`;
   const canonical = `${site.url}${path}`;
   const ogImage = image ? (image.startsWith('http') ? image : `${site.url}${image}`) : '';
+  const isNoindex = noindex || import.meta.env.VITE_NOINDEX === 'true';
 
   return (
     <Helmet>
@@ -20,7 +21,7 @@ export default function Seo({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={canonical} />
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      {isNoindex && <meta name="robots" content="noindex, nofollow" />}
 
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content={site.name} />

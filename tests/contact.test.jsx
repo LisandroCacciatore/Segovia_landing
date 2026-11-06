@@ -50,7 +50,8 @@ describe('formulario de contacto', () => {
 
     expect(fetch).not.toHaveBeenCalled();
     expect(window.open).not.toHaveBeenCalled();
-    expect(await screen.findByText(/Te abrimos WhatsApp/i)).toBeInTheDocument();
+    // Con endpoint configurado el mensaje es el de API, no el de WhatsApp.
+    expect(await screen.findByText(/Recibimos tu consulta/i)).toBeInTheDocument();
   });
 
   it('saca honeypot del payload del POST', async () => {
@@ -76,5 +77,8 @@ describe('formulario de contacto', () => {
       origen: 'landing',
     });
     expect(body.enviado).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    // Envio exitoso por API: mensaje de API, nunca el de WhatsApp.
+    expect(await screen.findByText(/Recibimos tu consulta/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Te abrimos WhatsApp/i)).not.toBeInTheDocument();
   });
 });

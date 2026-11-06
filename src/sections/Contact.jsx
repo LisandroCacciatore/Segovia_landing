@@ -3,10 +3,6 @@ import { site } from '../data/site.js';
 import { contact } from '../data/contact.js';
 import { waLink } from '../utils/whatsapp.js';
 
-// Si hay endpoint, la consulta se manda por API (n8n) y NO se abre WhatsApp:
-// el mensaje de exito tiene que decir la verdad en cada caso.
-const VIA_API = Boolean(import.meta.env.VITE_FORM_ENDPOINT);
-
 const EMPTY = {
   name: '',
   phone: '',
@@ -20,6 +16,11 @@ const EMPTY = {
 export default function Contact() {
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState('idle'); // idle | sending | ok | error
+
+  // Con endpoint, la consulta va por API (n8n) y NO se abre WhatsApp: el
+  // mensaje de exito tiene que decir la verdad en cada caso. Se evalua en el
+  // render (no como constante de modulo) para que los tests puedan stubbearlo.
+  const viaApi = Boolean(import.meta.env.VITE_FORM_ENDPOINT);
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -242,7 +243,7 @@ export default function Contact() {
 
               {status === 'ok' && (
                 <div className="mt-space-md p-space-md bg-surface-container-high text-tertiary rounded-lg font-body-sm">
-                  {VIA_API ? contact.formSuccess : contact.formSuccessWhatsApp}
+                  {viaApi ? contact.formSuccess : contact.formSuccessWhatsApp}
                 </div>
               )}
               {status === 'error' && (

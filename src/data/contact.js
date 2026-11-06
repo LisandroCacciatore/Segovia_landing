@@ -7,6 +7,8 @@ export const contact = {
   formConsent:
     'Autorizo el tratamiento de mis datos personales para que el estudio responda mi consulta, conforme a la Ley 25.326.',
   formSuccess:
+    'Listo. Recibimos tu consulta: un abogado la va a revisar y te responde dentro del dia laboral.',
+  formSuccessWhatsApp:
     'Listo. Te abrimos WhatsApp con tu consulta ya escrita: apreta enviar y te respondemos a la brevedad.',
   formError:
     'No pudimos enviar la consulta. Escribinos directamente por WhatsApp o al correo del estudio.',

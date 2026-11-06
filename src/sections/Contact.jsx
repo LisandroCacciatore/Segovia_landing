@@ -3,6 +3,10 @@ import { site } from '../data/site.js';
 import { contact } from '../data/contact.js';
 import { waLink } from '../utils/whatsapp.js';
 
+// Si hay endpoint, la consulta se manda por API (n8n) y NO se abre WhatsApp:
+// el mensaje de exito tiene que decir la verdad en cada caso.
+const VIA_API = Boolean(import.meta.env.VITE_FORM_ENDPOINT);
+
 const EMPTY = {
   name: '',
   phone: '',
@@ -238,7 +242,7 @@ export default function Contact() {
 
               {status === 'ok' && (
                 <div className="mt-space-md p-space-md bg-surface-container-high text-tertiary rounded-lg font-body-sm">
-                  {contact.formSuccess}
+                  {VIA_API ? contact.formSuccess : contact.formSuccessWhatsApp}
                 </div>
               )}
               {status === 'error' && (

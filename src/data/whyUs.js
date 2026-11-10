@@ -1,10 +1,13 @@
+import santiago from '../assets/santiago-segovia.jpg';
+
 export const whyUs = {
   tag: 'Nuestra Garantia',
   title: 'Por Que Elegir Nuestro Estudio',
   description:
     'Entendemos la angustia e incertidumbre que genera perder el empleo o padecer secuelas fisicas sin respaldo. Trabajamos con transparencia total y cercania constante.',
-  image: '',
-  imageAlt: 'Abogado laboralista revisando expedientes en Rosario',
+  // Importada desde assets: Vite le aplica el base path de Pages en staging.
+  image: santiago,
+  imageAlt: 'Santiago Segovia, abogado laboralista, con la ciudad de Rosario de fondo',
   imageCaption: {
     title: 'Santiago Segovia & Asoc.',
     subtitle: 'Abogados Laboralistas Matriculados en el Colegio de Abogados de Rosario',

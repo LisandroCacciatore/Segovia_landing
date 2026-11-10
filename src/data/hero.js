@@ -1,3 +1,5 @@
+import heroConsulta from '../assets/hero-consulta.jpg';
+
 export const hero = {
   badge: 'Especialistas en Derecho Laboral y ART',
   title: 'Defendemos tus',
@@ -11,8 +13,9 @@ export const hero = {
   ctaPrimary: { label: 'Pedi tu Consulta por WhatsApp', icon: 'chat' },
   ctaSecondary: { label: 'Conoce nuestras areas', icon: 'arrow_downward' },
   urgencyText: 'Atencion de urgencia dentro de las 24 horas habiles.',
-  image: '',
-  imageAlt: 'Balanza de la justicia en despacho juridico de Rosario',
+  image: heroConsulta,
+  imageAlt:
+    'Abogado laboralista en su estudio de Rosario, con expedientes sobre el escritorio y diplomas en la pared',
   badgeCard: {
     label: 'Segovia & Asoc.',
     title: 'Proteccion Laboral Activa',

@@ -13,8 +13,8 @@ export const site = {
   address: 'Balcarce 1651, Rosario, Santa Fe',
   addressShort: 'Balcarce 1651 (Tribunales), Rosario',
   addressFull: 'Balcarce 1651, S2000QJR, Rosario, Santa Fe',
-  // TODO: los horarios NO estan verificados. Confirmar con Santiago antes de publicar.
-  hours: 'Lunes a Viernes de 8:00 a 18:00 hs (Urgencias 24 hs via WhatsApp)',
+  // Horarios confirmados por el estudio: lunes a viernes de 8 a 16.
+  hours: 'Lunes a Viernes de 8:00 a 16:00 hs. Urgencias: escribinos por WhatsApp a cualquier hora y te respondemos en el horario de atencion.',
   socials: {
     // TODO: falta el handle real de Instagram y la URL de la pagina de Facebook.
     instagram: '',

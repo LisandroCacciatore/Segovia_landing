@@ -67,3 +67,18 @@ registro falle. Por eso el aviso de errores es importante.
   a necesitar esta importación.
 - **El puerto 5678 abierto a internet**: es configuración del servidor, no del
   flujo.
+
+## Antes de activar el flujo de errores
+
+Dos cosas que, si faltan, hacen que el flujo **falle en silencio**:
+
+1. **Destinatario real.** En `errores.workflow.json` el campo `sendTo` viene como
+   `CORREO_DEL_ESTUDIO`. Si se importa tal cual, Gmail lo rechaza con
+   `Invalid email address` y el aviso nunca llega. Hay que poner el correo del
+   estudio al importar.
+2. **Credencial de Gmail.** El nodo viene sin credencial: se asigna desde el
+   editor, y conviene reutilizar la misma que ya usa el nodo "Avisar al estudio".
+
+Y el flujo tiene que quedar **activo**: n8n no ejecuta un error workflow
+inactivo; el error que se ve es
+`Workflow "<id>" is not active and cannot be executed`.

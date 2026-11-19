@@ -1,45 +1,38 @@
-// ATENCION - LEER ANTES DE PUBLICAR
-// ---------------------------------------------------------------------------
-// Estos tres testimonios NO son verificables. La auditoria del 14/10/2026
-// encontro que los testimonios del sitio actual (Martin G, Carolina R,
-// Daniel P) no coinciden con NINGUN resenante real de la ficha de Google, que
-// son: Noee, Virginia Racca y sebastian flores.
+// Testimonios REALES de la ficha de Google del estudio.
 //
-// Publicar testimonios inventados en el sitio de un abogado es publicidad
-// enganosa. Antes de publicar hay dos caminos:
-//   a) Santiago autoriza publicar las resenas reales, con nombre y enlace.
-//   b) Se quita la seccion (Testimonials.jsx no se renderiza).
+// Textos copiados tal cual los escribieron los autores, sin corregir ortografía
+// ni resumir: son citas textuales y cualquier "mejora" las convierte en otra cosa.
+// El nombre va como figura en Google.
 //
-// isPlaceholder: true marca el contenido como no publicable todavia.
+// isPlaceholder: false los marca como publicables y activa la sección
+// (ver testimonialsArePublishable). Los enlaces a la ficha están en
+// site.socials.googleReviews.
 export const testimonials = [
   {
-    isPlaceholder: true,
+    isPlaceholder: false,
     quote:
-      'Me despidieron de un dia para el otro y no sabia que hacer ni cuanto me correspondia. Me acompanaron en todo el proceso y lograron que cobre la indemnizacion justa.',
-    name: 'Martin G.',
-    case: 'Reclamo por Despido Incausado',
-    initials: 'MG',
+      'Un abogado dio mi canso por perdido, me contacté con el Dr Segovia y dos Meses lo saco adelante sin dudar que iba a ganar!!! Su ocupación fue excelente, lo recomiendo!!!!',
+    name: 'Virginia Racca',
+    case: 'Hace 4 meses · Google',
+    initials: 'VR',
   },
   {
-    isPlaceholder: true,
+    isPlaceholder: false,
     quote:
-      'Sufri un accidente en el trabajo y ellos se ocuparon de todo el reclamo medico y legal contra la ART. Siempre me tuvieron al tanto y cobramos rapido.',
-    name: 'Carolina R.',
-    case: 'Accidente de Trayecto (ART)',
-    initials: 'CR',
+      'Excelente servicio, santiago muy buen profesional,me asesoro, me acompaño en el proceso, y resolvimos el pago de una empresa, sino aun estaría esperando.',
+    name: 'Noee',
+    case: 'Hace 5 meses · Google',
+    initials: 'N',
   },
   {
-    isPlaceholder: true,
+    isPlaceholder: false,
     quote:
-      'Me ayudaron a salir del Veraz y del Banco Central por una deuda vieja que me seguia bloqueando. En pocos meses se limpio el historial.',
-    name: 'Daniel P.',
-    case: 'Baja de Informes Comerciales (Habeas Data)',
-    initials: 'DP',
+      'Muy amable y muy buen asesoramiento, ademas super atento a las dudas y nesecidades. Muy Recomendable',
+    name: 'sebastian flores',
+    case: 'Hace 5 meses · Google',
+    initials: 'SF',
   },
 ];
 
-// Se usa para decidir si la seccion se renderiza. Hoy devuelve false:
-// mientras no haya un testimonio real autorizado, la seccion se muestra solo
-// en desarrollo (ver Testimonials.jsx) para poder revisar el diseno.
 export const testimonialsArePublishable = () =>
   testimonials.some((t) => !t.isPlaceholder);

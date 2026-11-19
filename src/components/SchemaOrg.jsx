@@ -26,10 +26,19 @@ export default function SchemaOrg({ type, article = null }) {
       areaServed: ['Rosario', 'Santa Fe', 'Argentina'],
       knowsLanguage: 'es-AR',
       priceRange: '$$',
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          opens: '08:00',
+          closes: '16:00',
+        },
+      ],
       founder: {
         '@type': 'Person',
         name: author.name,
         jobTitle: 'Abogado Laboralista',
+        identifier: author.matricula || undefined,
       },
     };
   }

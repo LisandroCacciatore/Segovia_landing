@@ -242,6 +242,7 @@ export default function BlogPost() {
                   </h4>
                   <p className="text-primary text-body-sm font-medium">
                     {author.role}
+                    {author.matricula ? ` — ${author.matricula}` : ''}
                   </p>
                   <p className="font-body-sm text-on-surface-variant leading-relaxed pt-space-xs">
                     {author.bio}

@@ -40,7 +40,7 @@ export const contact = {
       {
         icon: 'schedule',
         title: 'Horarios de Atencion',
-        text: 'Lunes a Viernes de 8:00 a 18:00 hs (Urgencias 24 hs via WhatsApp)',
+        text: 'Lunes a Viernes de 8:00 a 16:00 hs. Urgencias: escribinos por WhatsApp a cualquier hora y te respondemos en el horario de atencion.',
       },
     ],
   },

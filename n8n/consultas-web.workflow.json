@@ -1,0 +1,260 @@
+{
+  "updatedAt": "2026-11-05T15:15:16.871Z",
+  "createdAt": "2026-11-04T21:43:13.942Z",
+  "id": "0DqHycSxogeVLcDt",
+  "name": "Consultas web - Estudio Segovia",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "\n// Valida y normaliza la consulta que manda la landing.\n// Contrato (src/sections/Contact.jsx): name, phone, email, service, message,\n// consent, origen, enviado. El honeypot ya se descarta en el navegador.\nconst b = $input.first().json.body || {};\n\nconst SERVICIOS = {\n  despido: 'Despido injustificado o trabajo no registrado',\n  art: 'Accidente de trabajo o enfermedad profesional (ART)',\n  sueldo: 'Diferencias salariales o sueldo mal liquidado',\n  veraz: 'Salir de Veraz / Nosis / BCRA',\n  otro: 'Familia, Sucesiones o Transito',\n};\nconst ALTA = ['despido', 'art'];\n\nconst linea = (v, max) => String(v ?? '').replace(/[\\u0000-\\u001f\\u007f]/g, ' ').replace(/\\s+/g, ' ').trim().slice(0, max);\nconst texto = (v, max) => String(v ?? '').replace(/[\\u0000-\\u0009\\u000b-\\u001f\\u007f]/g, ' ').replace(/\\n{3,}/g, '\\n\\n').trim().slice(0, max);\nconst esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;');\n\nconst nombre = linea(b.name, 120);\nconst telefono = linea(b.phone, 40);\nconst email = linea(b.email, 160);\nconst servicio = linea(b.service, 20);\nconst mensaje = texto(b.message, 3000);\nconst digitos = telefono.replace(/\\D/g, '');\n\nconst errores = [];\nif (b.consent !== true) errores.push('consentimiento');\nif (nombre.length < 2) errores.push('nombre');\nif (digitos.length < 8 || digitos.length > 15 || !/^[0-9+()\\-.\\s]+$/.test(telefono)) errores.push('telefono');\nif (email && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) errores.push('email');\nif (!SERVICIOS[servicio]) errores.push('motivo');\nif (mensaje.length < 5) errores.push('mensaje');\n\nif (errores.length) {\n  return [{ json: { ok: false, errores } }];\n}\n\n// Link de WhatsApp solo si el numero se normaliza sin ambiguedad.\nlet wa = null;\nlet d = digitos;\nif (d.startsWith('549') && d.length === 13) wa = d;\nelse if (d.startsWith('54') && d.length === 12) wa = '549' + d.slice(2);\nelse if (d.length === 10) wa = '549' + d;\nconst waLink = wa ? `https://wa.me/${wa}` : '';\n\nconst fecha = $now.setZone('America/Argentina/Buenos_Aires').toFormat('dd/MM/yyyy HH:mm');\nconst prioridad = ALTA.includes(servicio) ? 'Alta' : 'Normal';\nconst motivo = SERVICIOS[servicio];\n\nconst fila = (k, v) => `<tr><td style=\"padding:4px 12px 4px 0;color:#555\"><b>${k}</b></td><td style=\"padding:4px 0\">${v}</td></tr>`;\nconst html = `\n<h3 style=\"margin:0 0 8px\">Nueva consulta desde la web</h3>\n<table style=\"font-family:Arial,sans-serif;font-size:14px\">\n${fila('Fecha', esc(fecha))}\n${fila('Prioridad', esc(prioridad))}\n${fila('Nombre', esc(nombre))}\n${fila('Telefono', esc(telefono))}\n${fila('Email', email ? esc(email) : '(no informado)')}\n${fila('Motivo', esc(motivo))}\n</table>\n<p style=\"font-family:Arial,sans-serif;font-size:14px\"><b>Situacion:</b><br>${esc(mensaje).replace(/\\n/g, '<br>')}</p>\n${waLink ? `<p><a href=\"${waLink}\">Responder por WhatsApp</a></p>` : ''}\n<p style=\"font-family:Arial,sans-serif;font-size:12px;color:#777\">Datos sujetos a secreto profesional y Ley 25.326. Origen: landing.</p>`;\n\nreturn [{ json: { ok: true, fecha, prioridad, nombre, telefono, email, motivo, mensaje, waLink, html,\n  asunto: `[Web] ${prioridad === 'Alta' ? 'URGENTE - ' : ''}${motivo} - ${nombre}` } }];\n"
+      },
+      "name": "Validar y normalizar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Es valida?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, errores: $json.errores } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "name": "Responder 400",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "ID_DE_LA_PLANILLA",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Consultas",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $('Validar y normalizar').item.json.fecha }}",
+            "Estado": "Nueva",
+            "Prioridad": "={{ $('Validar y normalizar').item.json.prioridad }}",
+            "Nombre": "={{ $('Validar y normalizar').item.json.nombre }}",
+            "Telefono": "={{ $('Validar y normalizar').item.json.telefono }}",
+            "Email": "={{ $('Validar y normalizar').item.json.email }}",
+            "Motivo": "={{ $('Validar y normalizar').item.json.motivo }}",
+            "Situacion": "={{ $('Validar y normalizar').item.json.mensaje }}",
+            "Origen": "landing"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "name": "Registrar en planilla",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        640,
+        0
+      ],
+      "credentials": {},
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "CORREO_DEL_ESTUDIO",
+        "subject": "={{ $('Validar y normalizar').item.json.asunto }}",
+        "message": "={{ $('Validar y normalizar').item.json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "name": "Avisar al estudio",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        176
+      ],
+      "webhookId": "ID_DE_LA_PLANILLA",
+      "credentials": {},
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "consulta-web",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://estudiosegoviayasoc.com.ar,https://lisandrocacciatore.github.io"
+        }
+      },
+      "name": "Consulta web",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        160
+      ],
+      "webhookId": "consulta-web"
+    }
+  ],
+  "connections": {
+    "Validar y normalizar": {
+      "main": [
+        [
+          {
+            "node": "Es valida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es valida?": {
+      "main": [
+        [
+          {
+            "node": "Responder OK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder OK": {
+      "main": [
+        [
+          {
+            "node": "Registrar en planilla",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Avisar al estudio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta web": {
+      "main": [
+        [
+          {
+            "node": "Validar y normalizar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "activeVersionId": "d30a9a4c-40c9-4a39-8dca-dd05ddbcee76",
+  "versionCounter": 29,
+  "triggerCount": 1,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-11-04T21:43:14.087Z",
+      "createdAt": "2026-11-04T21:43:14.087Z",
+      "role": "workflow:owner",
+      "workflowId": "0DqHycSxogeVLcDt",
+      "projectId": "xfZoYhTsiHe66424",
+      "project": {
+        "updatedAt": "2026-05-04T03:54:35.661Z",
+        "createdAt": "2026-05-04T03:49:05.437Z",
+        "id": "xfZoYhTsiHe66424",
+        "name": "Lisandro Gabriel CORREO_DEL_ESTUDIO <CORREO_DEL_ESTUDIO>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "8bbfbe57-9c34-4458-98c7-a4beda8977c7"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

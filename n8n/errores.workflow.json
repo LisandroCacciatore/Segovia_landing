@@ -1,0 +1,72 @@
+{
+  "name": "Errores - Consultas web",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Si algo falla",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Arma un aviso legible con lo que n8n entrega en el Error Trigger.\nconst w = $json.workflow || {};\nconst e = $json.execution || {};\nreturn [{\n  json: {\n    flujo: w.name || 'sin nombre',\n    nodo: (e.lastNodeExecuted) || (e.error && e.error.node && e.error.node.name) || 'desconocido',\n    mensaje: (e.error && e.error.message) || 'sin detalle',\n    ejecucion: e.id || '',\n    enlace: e.url || '',\n    cuando: new Date().toISOString(),\n  },\n}];"
+      },
+      "name": "Armar el aviso",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "CORREO_DEL_ESTUDIO",
+        "subject": "=Fallo el flujo: {{ $json.flujo }}",
+        "message": "=El flujo \"{{ $json.flujo }}\" fallo.\n\nNodo: {{ $json.nodo }}\nMensaje: {{ $json.mensaje }}\nEjecucion: {{ $json.ejecucion }}\n{{ $json.enlace }}\n\nRevisar: si es la planilla o el correo, puede ser que la autorizacion de Google haya vencido (app en modo Testing, vence a los 7 dias).",
+        "options": {}
+      },
+      "name": "Avisar por correo",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        0
+      ],
+      "credentials": {}
+    }
+  ],
+  "connections": {
+    "Si algo falla": {
+      "main": [
+        [
+          {
+            "node": "Armar el aviso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Armar el aviso": {
+      "main": [
+        [
+          {
+            "node": "Avisar por correo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "id": "J51bObHjWxmkQzj5"
+}

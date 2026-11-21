@@ -61,8 +61,8 @@ export default function BlogPost() {
   return (
     <article className="bg-background min-h-screen">
       <Seo
-        title={post.title}
-        description={post.excerpt}
+        title={post.seoTitle || post.title}
+        description={post.metaDescription || post.excerpt}
         path={`/blog/${post.slug}`}
         type="article"
         article={{ date: post.date, categoryLabel: post.categoryLabel }}
@@ -110,11 +110,6 @@ export default function BlogPost() {
             >
               {post.categoryLabel}
             </Link>
-            <span className="text-on-surface-variant text-body-sm">
-              Actualizado a {new Date(post.date).toLocaleDateString('es-AR', {
-                month: 'long',
-                year: 'numeric',
-              })}</span>
           </div>
 
           <h1 className="font-display-hero text-display-hero-mobile md:text-headline-lg text-on-surface leading-tight">
@@ -129,12 +124,6 @@ export default function BlogPost() {
               <span className="text-on-surface font-medium">
                 Por {post.author}
               </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-[16px] text-primary">
-                calendar_month
-              </span>
-              <span>{formatDate(post.date)}</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="material-symbols-outlined text-[16px] text-primary">
@@ -228,6 +217,22 @@ export default function BlogPost() {
                   );
                 })}
               </div>
+
+              {post.faq && post.faq.length > 0 && (
+                <section className="space-y-space-md pt-space-lg">
+                  <h2 className="font-headline-md text-headline-md text-on-surface font-serif pt-space-sm border-b border-surface-container-high/50 pb-space-xs">
+                    Preguntas frecuentes
+                  </h2>
+                  {post.faq.map((item, i) => (
+                    <div key={i} className="space-y-space-xs">
+                      <h3 className="font-headline-sm text-on-surface font-bold">
+                        {item.q}
+                      </h3>
+                      <p className="text-on-surface-variant">{item.a}</p>
+                    </div>
+                  ))}
+                </section>
+              )}
 
               <div className="p-space-xl bg-surface-container rounded-xl border border-primary/30 shadow-xl flex flex-col sm:flex-row items-center sm:items-start gap-space-lg shadow-md">
                 <div className="w-20 h-20 rounded-full bg-primary/20 text-primary font-headline-lg font-bold flex items-center justify-center shrink-0 border-2 border-primary/40">

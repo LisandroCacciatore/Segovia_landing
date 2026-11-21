@@ -44,8 +44,7 @@ export default function SchemaOrg({ type, article = null }) {
   }
 
   if (type === 'Article' && article) {
-    data = {
-      '@context': 'https://schema.org',
+    const posting = {
       '@type': 'BlogPosting',
       headline: article.title,
       description: article.excerpt,
@@ -55,6 +54,28 @@ export default function SchemaOrg({ type, article = null }) {
       mainEntityOfPage: `${site.url}/blog/${article.slug}`,
       inLanguage: 'es-AR',
     };
+
+    // FAQPage: es lo que permite que un motor de respuestas (AEO) cite el
+    // articulo pregunta por pregunta en lugar de resumir el cuerpo entero.
+    const faq = article.faq || [];
+    if (faq.length > 0) {
+      data = {
+        '@context': 'https://schema.org',
+        '@graph': [
+          posting,
+          {
+            '@type': 'FAQPage',
+            mainEntity: faq.map((f) => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+          },
+        ],
+      };
+    } else {
+      data = { '@context': 'https://schema.org', ...posting };
+    }
   }
 
   if (!data) return null;
